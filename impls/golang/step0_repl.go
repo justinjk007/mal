@@ -1,17 +1,30 @@
 package main
 
 import (
+	"azul3d.org/engine/keyboard"
 	"bufio"
 	"fmt"
 	"os"
 	"strings"
-	// "azul3d.org/engine/keyboard"
 )
 
 func main() {
 
+	watcher := keyboard.NewWatcher()
+	// Query for the map containing information about all keys
+	status := watcher.States()
+
+	var history [100]string
+	history_pointer := 0
+
 	fmt.Print("GO LANG MAL REPL v0.1\n")
 	for true {
+
+		up_key := status[keyboard.ArrowUp]
+		if up_key == keyboard.Down {
+			fmt.Println(history[history_pointer-1])
+		}
+
 		fmt.Print("users> ")
 		reader := bufio.NewReader(os.Stdin)
 		// ReadString will block until the delimiter is entered
@@ -22,6 +35,9 @@ func main() {
 		}
 		// remove the delimeter from the string
 		input = strings.TrimSuffix(input, "\n")
+		// Add the input to history
+		history[history_pointer] = input
+		history_pointer++
 		fmt.Println(rep(input))
 	} // for loop
 }
