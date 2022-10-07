@@ -1,2 +1,4 @@
 #!/bin/bash
-exec $(dirname $0)/${STEP:-stepA_mal} "${@}"
+
+# I've made my makefile to name my binary mal all the time inside the folder named on step
+exec $(dirname $0)/${STEP:-stepA_mal}/mal "${@}"

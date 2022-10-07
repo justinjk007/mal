@@ -1,5 +1,9 @@
 * README
 
 #+begin_src sh
+export GOBIN=$HOME/go/bin
+
+go install
+
 make "test^golang^step0"
 #+end_src
