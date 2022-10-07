@@ -1,7 +1,6 @@
 package reader
 
 import (
-	"go/token"
 	"regexp"
 )
 
@@ -11,8 +10,8 @@ type Reader interface {
 }
 
 type Read struct {
-	position int
 	tokens   []string // map of tokens
+	position int
 }
 
 // return current token and increase the position
@@ -28,7 +27,7 @@ func (x Read) Peek() string {
 
 func () Read_str() {
 	tokens_from_ast := Tokenize()
-	reader = Read{0, tokens_from_ast}
+	reader = Read{tokens_from_ast,0}
 	read_form(reader)
 }
 
