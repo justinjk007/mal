@@ -3,16 +3,16 @@ package main
 import (
 	"fmt"
 	"regexp"
+	// "github.com/gijsbers/go-pcre"
 )
 
 func main() {
-	x := "(+ 1 2)"
+	x := "(+ 1 2 (+ \"string\" 4))"
 	musComp := regexp.MustCompile("[\\s,]*(~@|[\\[\\]{}()'`~^@]|\"(?:\\.|[^\\\"])*\"?|;.*|[^\\s\\[\\]{}('\"`,;)]*)")
-	tokens_from_ast := musComp.FindAllStringSubmatch(x, -1)
+	tokens_from_ast := musComp.FindAllString(x, -1) // -1 means go through the entire string
 
-	// fmt.Println(tokens_from_ast)
-	// A foreach loop in Go
-	for _, element := range tokens_from_ast {
-		fmt.Println(element)
+	for _, attribute := range tokens_from_ast {
+		fmt.Println("The token is:", attribute)
 	}
+
 }
