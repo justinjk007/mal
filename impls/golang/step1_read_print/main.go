@@ -6,9 +6,12 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"mal/reader"
 )
 
 func main() {
+
+	reader.Dummy()
 
 	watcher := keyboard.NewWatcher()
 	// Query for the map containing information about all keys

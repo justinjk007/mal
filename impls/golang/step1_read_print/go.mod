@@ -1,4 +1,4 @@
-module mal/mal
+module mal
 
 go 1.19
 

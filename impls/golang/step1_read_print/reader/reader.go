@@ -2,6 +2,7 @@ package reader
 
 import (
 	"regexp"
+	"fmt"
 )
 
 type Reader interface {
@@ -33,8 +34,12 @@ func () Read_str() {
 
 // Function will return a array(map) of strings that was tokenized
 // Key starts at 0
-func (x string) Tokenize() [][]string {
+func (x string) Tokenize() []string {
 	musComp := regexp.MustCompile("[\\s,]*(~@|[\\[\\]{}()'`~^@]|\"(?:\\.|[^\\\"])*\"?|;.*|[^\\s\\[\\]{}('\"`,;)]*)")
-	tokens_from_ast := musComp.FindAllStringSubmatch(x, -1)
+	tokens_from_ast := musComp.FindAllString(x, -1) // -1 means go through the entire string
 	return tokens_from_ast
+}
+
+func () Dummy() {
+	fmt.Println("dummy")
 }
