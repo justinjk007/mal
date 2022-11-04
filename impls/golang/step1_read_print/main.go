@@ -7,6 +7,8 @@ import (
 	"os"
 	"strings"
 	"mal/reader"
+	"mal/printer"
+	Types "mal/types"
 )
 
 func main() {
@@ -29,9 +31,9 @@ func main() {
 		}
 
 		fmt.Print("users> ")
-		reader := bufio.NewReader(os.Stdin)
+		buff_reader := bufio.NewReader(os.Stdin)
 		// ReadString will block until the delimiter is entered
-		input, err := reader.ReadString('\n')
+		input, err := buff_reader.ReadString('\n')
 		if err != nil {
 			fmt.Println("An error occured while reading input", err)
 			return
@@ -45,16 +47,20 @@ func main() {
 	} // for loop
 }
 
-func READ(input string) string {
-	return input
+// Change the READ function in step1_read_print.qx to call
+// reader.read_str and the PRINT function to call printer.pr_str. EVAL
+// continues to simply return its input but the type is now a mal data
+// type.
+func READ(input string) Types.Maltype {
+	return reader.Read_str(input)
 }
 
-func EVAL(input string) string {
+func EVAL(Types.Maltype string) Types.Maltype {
 	return input
 }
 
 func PRINT(input string) string {
-	return input
+	return printer.Pr_str(Types.Maltype input)
 }
 
 func rep(input string) string {

@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"unicode"
 	"strconv"
+	"strings"
 )
 
 type Reader interface {
@@ -47,16 +48,17 @@ func Read_str(x string) {
 // types inherit from. The MalList type (which also inherits from MalType) will
 // contain a list/array of other MalTypes. If your language is dynamically typed
 // then you can likely just return a plain list/array of other mal types.
-func Read_form(reader Read) Types.MalType {
+func Read_form(reader Read) *list.List {
 	token := reader.Peek()
 	Typelist := list.New()
-	mal := Types.MalType{"null","anytype"}
+	mal := new(Types.MalType)
 	if token == "(" {
 		Typelist = Read_list(reader)
 	} else {
 		mal = Read_atom(reader)
+		Typelist.Back(mal)
 	}
-	return mal
+	return Typelist
 }
 
 // Add the function read_list to reader.qx. This function will repeatedly call
@@ -67,7 +69,7 @@ func Read_form(reader Read) Types.MalType {
 // that read_list repeatedly calls read_form rather than read_atom. This
 // mutually recursive definition between read_list and read_form is what allows
 // lists to contain lists.
-func Read_list(reader Read) List {
+func Read_list(reader Read) *list.List {
 	list := list.New()
 	for reader.Next() != ")" {
 		token := Read_form(reader) // Maltype
@@ -78,27 +80,32 @@ func Read_list(reader Read) List {
 
 // This function will look at the contents of the token and return the
 // appropriate scalar (simple/single) data type value.
-func Read_atom(reader Read) Types.MalType {
-	mal := Types.MalType{"null","anytype"}
-	token := reader.Peek()
+func Read_atom(reader Read) *list.List {
+	token := reader.Next()
 	trimmed_token := strings.TrimSpace(token)
-	// For now only thinking about numbers ans symbols so everything will be
-	// 1 char length, which can be converted to rune which
-	rune_token := strconv.FormatUint(uint64([]rune(trimmed_token)[0]), 16)
-	if unicode.IsNumber(rune_token) {
-		mal.Val = trimmed_token
+	if match, _ := regexp.MatchString(`^-?[0-9]+$`, trimmed_token); match {
+		var i int
+		var e error
+		if i, e = strconv.Atoi(trimmed_token); e != nil {
+			fmt.Printf("Error converting %v into number", trimmed_token)
+		}
+		mal := new(Types.MalNumber)
+		mal.intVal = i
 		mal.DataType = "int"
+		mal.stringVal = trimmed_token
 		return mal 
-	} else if unicode.IsSymbol(rune_token) {
-		mal.Val = trimmed_token
+	} else if (trimmed_token == "+" || trimmed_token == "-" || trimmed_token == "/" || trimmed_token == "*" ) {
+		mal := new(Types.MalSymbol)
 		mal.DataType = "symbol"
+		mal.stringVal = trimmed_token
 		return mal 
-	} else if unicode.IsSpace(rune_token) {
-		fmt.Println("Found a space as a token, this shouldn't happen!")
-		exit(1)
 	} else {
 		fmt.Println("Found an unexpected type!")
-		exit(1)
+		mal := new(Types.MalNumber)
+		mal.intVal = 0
+		mal.DataType = "unexpected"
+		mal.stringVal = trimmed_token
+		return mal 
 	}
 }
 
@@ -108,8 +115,4 @@ func Tokenize(x string) []string {
 	musComp := regexp.MustCompile("[\\s,]*(~@|[\\[\\]{}()'`~^@]|\"(?:\\.|[^\\\"])*\"?|;.*|[^\\s\\[\\]{}('\"`,;)]*)")
 	tokens_from_ast := musComp.FindAllString(x, -1) // -1 means go through the entire string
 	return tokens_from_ast
-}
-
-func Dummy() {
-	fmt.Println("dummy")
 }
