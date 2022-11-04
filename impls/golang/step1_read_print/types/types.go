@@ -1,15 +1,7 @@
 package types
 
 type MalType struct {
-	intVal int
+	IntVal int
 	DataType string
-	stringVal string
-}
-
-type MalNumber struct {
-	MalType // anonymous field
-}
-
-type MalSymbol struct {
-	MalType // anonymous field
+	StringVal string
 }

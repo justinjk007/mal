@@ -2,10 +2,11 @@ package printer
 
 import (
 	Types "mal/types"
+	"container/list"
 	"fmt"
 )
 
-func Pr_str(list Types.MalType) string {
+func Pr_str(list *list.List) string {
 
 	// symbol: return the string name of the symbol
 	// number: return the number as a string
@@ -14,15 +15,21 @@ func Pr_str(list Types.MalType) string {
 	// surround the final result with parens
 
 	for l := list.Front(); l != nil; l = l.Next() {
-		switch l {
-		case "":
-			fmt.Println("This is the answer!")
-		case 45:
-			fmt.Println("Not the answer")
+		var token Types.MalType
+		token = l.Value.(Types.MalType)
+		switch token.DataType {
+		case "string":
+			return token.StringVal
+		case "int":
+			return token.StringVal
+		case "symbol":
+			return token.StringVal
 		default:
-			fmt.Println("The guess is wrong!")
+			fmt.Println("Unexpected type has been send to print")
+			return "nil"
 		}
 
 	}
 
+	return "nil"
 }

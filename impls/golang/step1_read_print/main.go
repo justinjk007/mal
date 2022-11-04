@@ -6,14 +6,12 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"container/list"
 	"mal/reader"
 	"mal/printer"
-	Types "mal/types"
 )
 
 func main() {
-
-	reader.Dummy()
 
 	watcher := keyboard.NewWatcher()
 	// Query for the map containing information about all keys
@@ -51,16 +49,16 @@ func main() {
 // reader.read_str and the PRINT function to call printer.pr_str. EVAL
 // continues to simply return its input but the type is now a mal data
 // type.
-func READ(input string) Types.Maltype {
+func READ(input string) *list.List {
 	return reader.Read_str(input)
 }
 
-func EVAL(Types.Maltype string) Types.Maltype {
+func EVAL(input *list.List) *list.List {
 	return input
 }
 
-func PRINT(input string) string {
-	return printer.Pr_str(Types.Maltype input)
+func PRINT(input *list.List) string {
+	return printer.Pr_str(input)
 }
 
 func rep(input string) string {
